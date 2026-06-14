@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Sorting-English-Sentence ver1.0.3</title>
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+  <link rel="icon" type="image/png" href="./apple-touch-icon.png" />
+  <link rel="shortcut icon" href="./apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Sorting-English-Sentence" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="application-name" content="Sorting-English-Sentence" />
+  <meta name="theme-color" content="#2563eb" />
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --ink: #1f2937;
+      --muted: #6b7280;
+      --line: #d9e0ea;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --soft-blue: #e8f0ff;
+      --green: #16a34a;
+      --red: #dc2626;
+      --amber: #f59e0b;
+      --shadow: 0 12px 30px rgba(25, 40, 80, 0.08);
+      --radius: 20px;
+      --slot-size: 48px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 38%, #f7f7fb 100%);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      padding: 14px;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+      appearance: none;
+      margin: 0;
+    }
+
+    .app {
+      width: min(100%, 820px);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 6px 0 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      color: white;
+      box-shadow: var(--shadow);
+      font-weight: 800;
+    }
+
+    .brand h1 {
+      font-size: 1.16rem;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.72);
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      white-space: nowrap;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(217, 224, 234, 0.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .card h2 {
+      font-size: 1.02rem;
+      margin: 0 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .card h3 {
+      margin: 16px 0 8px;
+      font-size: 0.96rem;
+    }
+
+    .subtext {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin: 8px 0;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      cursor: pointer;
+      color: white;
+      background: var(--primary);
+      font-weight: 700;
+      box-shadow: 0 10px 18px rgba(37, 99, 235, 0.2);
+      transition: transform 0.08s ease, background 0.2s ease, opacity 0.2s ease;
+      min-height: 46px;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn.secondary {
+      color: var(--ink);
+      background: #eef2f7;
+      box-shadow: none;
+      border: 1px solid var(--line);
+    }
+
+    .btn.ghost {
+      color: var(--primary);
+      background: white;
+      border: 1px solid #bfd0ff;
+      box-shadow: none;
+    }
+
+    .btn.danger {
+      color: white;
+      background: var(--red);
+      box-shadow: 0 10px 18px rgba(220, 38, 38, 0.16);
+    }
+
+    .btn.small {
+      min-height: 36px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .file-box {
+      border: 1.5px dashed #a8b9d8;
+      background: #fbfdff;
+      border-radius: 18px;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .file-box input[type="file"] {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 14px;
+      padding: 10px;
+    }
+
+    .status {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .status span {
+      background: #eef2f7;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 0.82rem;
+    }
+
+    .sample {
+      margin-top: 10px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px;
+      color: #374151;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    .question-screen {
+      min-height: calc(100vh - 28px);
+      display: none;
+    }
+
+    .question-screen.active {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .question-head {
+      position: sticky;
+      top: 8px;
+      z-index: 20;
+      background: rgba(245, 247, 251, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(217, 224, 234, 0.9);
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .progress-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 8px;
+    }
+
+    .meter {
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      overflow: hidden;
+    }
+
+    .meter > div {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #2563eb, #38bdf8);
+      border-radius: inherit;
+      transition: width 0.22s ease;
+    }
+
+    .translation-card {
+      background: var(--card);
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      margin-bottom: 8px;
+    }
+
+    .translation {
+      font-size: 1.15rem;
+      line-height: 1.65;
+      font-weight: 800;
+    }
+
+    .answer-area,
+    .word-bank {
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 8px;
+      min-height: 66px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fbfdff;
+      padding: 10px;
+    }
+
+    .answer-area {
+      margin-top: 10px;
+    }
+
+    .answer-slot {
+      width: var(--slot-size);
+      min-width: var(--slot-size);
+      height: 42px;
+      box-sizing: border-box;
+      padding: 0;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      background: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 0.78rem;
+      line-height: 1;
+      user-select: none;
+      overflow: hidden;
+      transition: width 0.15s ease, background 0.15s ease, border 0.15s ease;
+    }
+
+    .answer-slot.empty::after {
+      content: "";
+      width: 16px;
+      height: 2px;
+      border-radius: 99px;
+      background: #cbd5e1;
+    }
+
+    .answer-slot.filled {
+      width: auto;
+      min-width: var(--slot-size);
+      max-width: 100%;
+      padding: 0;
+      border-color: #9db7ee;
+      background: #f8fbff;
+    }
+
+    .answer-slot.drop-target {
+      outline: 3px solid rgba(37, 99, 235, 0.2);
+      border-color: var(--primary);
+    }
+
+    .chip {
+      box-sizing: border-box;
+      min-height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: 1px solid #bfd0ff;
+      background: var(--soft-blue);
+      color: #1e3a8a;
+      font-weight: 800;
+      line-height: 1;
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+      white-space: nowrap;
+      box-shadow: 0 6px 12px rgba(37, 99, 235, 0.08);
+    }
+
+    .chip:active {
+      transform: translateY(1px);
+    }
+
+    .chip.dragging {
+      opacity: 0.45;
+    }
+
+    .answer-slot .chip {
+      height: 100%;
+      min-height: 0;
+      width: auto;
+      max-width: min(78vw, 680px);
+      padding: 0 12px;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      box-shadow: none;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1;
+    }
+
+    .word-bank .chip {
+      background: white;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .controls .wide {
+      grid-column: 1 / -1;
+    }
+
+    .judge {
+      min-height: 26px;
+      font-weight: 800;
+      text-align: center;
+      margin-top: -4px;
+    }
+
+    .judge.ok {
+      color: var(--green);
+    }
+
+    .judge.ng {
+      color: var(--red);
+    }
+
+    .wrong-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .wrong-card {
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--amber);
+      border-radius: 16px;
+      background: #fffaf0;
+      padding: 12px;
+    }
+
+    .wrong-card p {
+      margin: 6px 0;
+      line-height: 1.55;
+    }
+
+    .wrong-card .meta {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 18px 8px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+    }
+
+    .result-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .summary-tile {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+
+    .summary-tile strong {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 3px;
+    }
+
+    .summary-tile span {
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 18px;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal {
+      width: min(100%, 420px);
+      background: white;
+      border-radius: 22px;
+      box-shadow: 0 25px 80px rgba(15, 23, 42, 0.28);
+      padding: 18px;
+    }
+
+    .modal h2 {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+    }
+
+    .number-row {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .number-row input {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      width: 100%;
+      font-size: 1rem;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (min-width: 720px) {
+      body {
+        padding: 24px;
+      }
+
+      .main-grid {
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
+        align-items: start;
+      }
+
+      .actions {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .question-screen.active {
+        min-height: auto;
+      }
+
+      .question-content {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 14px;
+      }
+
+      .translation {
+        font-size: 1.25rem;
+      }
+
+      .controls {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      .controls .wide {
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 380px) {
+      :root {
+        --slot-size: 44px;
+      }
+
+      body {
+        padding: 10px;
+      }
+
+      .card,
+      .translation-card {
+        padding: 14px;
+      }
+
+      .chip {
+        padding: 8px 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <div id="homeScreen" class="screen active">
+      <header class="topbar">
+        <div class="brand">
+          <div class="logo">⇄</div>
+          <div>
+            <h1>Sorting-English-Sentence</h1>
+            <p>ver1.0.3 / CSVからスマホ向け問題を作成</p>
+          </div>
+        </div>
+        <div class="pill" id="loadedCountPill">0問</div>
+      </header>
+
+      <div class="main-grid">
+        <section class="card">
+          <h2>ホーム</h2>
+
+          <div class="file-box">
+            <strong>CSVファイルを読み込む</strong>
+            <p class="subtext">
+              英文を <b>/</b> で区切った列と、和訳の列を読み取ります。ヘッダーがあっても使えます。
+            </p>
+            <input id="csvInput" type="file" accept=".csv,text/csv" />
+            <div class="sample">例：I/have/a/pen/.,私はペンを持っています。</div>
+            <div class="status">
+              <span id="questionStatus">読み込み済み：0問</span>
+              <span id="wrongStatus">保存済みミス：0件</span>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button class="btn" id="startBtn">並び替え問題を開始</button>
+            <button class="btn secondary" id="clearQuestionsBtn">読み込みデータを削除</button>
+          </div>
+
+          <p class="subtext">
+            空欄の四角はすべて同じ大きさで表示されます。単語を置いた後だけ、単語の長さに合わせて幅が変わります。
+          </p>
+        </section>
+
+        <section class="card">
+          <h2>
+            リザルト
+            <button class="btn small ghost" id="refreshResultBtn">更新</button>
+          </h2>
+
+          <div id="latestResultArea"></div>
+
+          <h3>保存された間違い</h3>
+          <div class="actions">
+            <button class="btn small secondary" id="clearWrongsBtn">間違い履歴を削除</button>
+          </div>
+          <div id="wrongHistory" class="wrong-list"></div>
+        </section>
+      </div>
+    </div>
+
+    <div id="questionScreen" class="question-screen">
+      <div class="question-head">
+        <div class="progress-line">
+          <span id="progressText">1 / 1</span>
+          <span id="scoreText">正解 0</span>
+        </div>
+        <div class="meter"><div id="progressBar"></div></div>
+      </div>
+
+      <main class="question-content">
+        <section class="translation-card">
+          <div class="label">和訳</div>
+          <div class="translation" id="translationText"></div>
+        </section>
+
+        <section class="translation-card">
+          <div class="label">ここに単語を並べる</div>
+          <div id="answerArea" class="answer-area"></div>
+        </section>
+
+        <section class="translation-card">
+          <div class="label">単語カード</div>
+          <div id="wordBank" class="word-bank"></div>
+        </section>
+
+        <div id="judgeText" class="judge"></div>
+
+        <div class="controls">
+          <button class="btn secondary" id="undoBtn">1つ戻す</button>
+          <button class="btn secondary" id="resetBtn">リセット</button>
+          <button class="btn wide" id="checkBtn">答え合わせ</button>
+          <button class="btn danger wide" id="quitBtn">中断</button>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="countModal" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <h2>出題問題数</h2>
+      <p class="subtext" id="modalHelp">何問出題しますか？</p>
+      <div class="number-row">
+        <input id="questionCountInput" type="number" min="1" step="1" inputmode="numeric" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn secondary" id="cancelCountBtn">キャンセル</button>
+        <button class="btn" id="confirmCountBtn">開始</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEYS = {
+      questions: "sortingEnglish.questions.v1",
+      wrongs: "sortingEnglish.wrongs.v1",
+      latest: "sortingEnglish.latestResult.v1"
+    };
+
+    const state = {
+      questions: [],
+      session: [],
+      currentIndex: 0,
+      completedCount: 0,
+      score: 0,
+      sessionWrongs: [],
+      currentTokens: [],
+      currentShuffled: [],
+      draggedTokenId: null,
+      sessionActive: false
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    const homeScreen = $("homeScreen");
+    const questionScreen = $("questionScreen");
+    const csvInput = $("csvInput");
+    const loadedCountPill = $("loadedCountPill");
+    const questionStatus = $("questionStatus");
+    const wrongStatus = $("wrongStatus");
+    const wrongHistory = $("wrongHistory");
+    const latestResultArea = $("latestResultArea");
+    const startBtn = $("startBtn");
+    const clearQuestionsBtn = $("clearQuestionsBtn");
+    const clearWrongsBtn = $("clearWrongsBtn");
+    const refreshResultBtn = $("refreshResultBtn");
+    const countModal = $("countModal");
+    const questionCountInput = $("questionCountInput");
+    const modalHelp = $("modalHelp");
+    const cancelCountBtn = $("cancelCountBtn");
+    const confirmCountBtn = $("confirmCountBtn");
+
+    const progressText = $("progressText");
+    const scoreText = $("scoreText");
+    const progressBar = $("progressBar");
+    const translationText = $("translationText");
+    const answerArea = $("answerArea");
+    const wordBank = $("wordBank");
+    const judgeText = $("judgeText");
+    const undoBtn = $("undoBtn");
+    const resetBtn = $("resetBtn");
+    const checkBtn = $("checkBtn");
+    const quitBtn = $("quitBtn");
+
+    function safeJSONParse(value, fallback) {
+      try {
+        return value ? JSON.parse(value) : fallback;
+      } catch {
+        return fallback;
+      }
+    }
+
+    function saveQuestions() {
+      localStorage.setItem(STORAGE_KEYS.questions, JSON.stringify(state.questions));
+    }
+
+    function getWrongs() {
+      return safeJSONParse(localStorage.getItem(STORAGE_KEYS.wrongs), []);
+    }
+
+    function saveWrongs(wrongs) {
+      localStorage.setItem(STORAGE_KEYS.wrongs, JSON.stringify(wrongs));
+    }
+
+    function saveLatestResult(result) {
+      localStorage.setItem(STORAGE_KEYS.latest, JSON.stringify(result));
+    }
+
+    function parseCSV(text) {
+      const rows = [];
+      let row = [];
+      let cell = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const next = text[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && next === '"') {
+            cell += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === "," && !inQuotes) {
+          row.push(cell.trim());
+          cell = "";
+        } else if ((char === "\n" || char === "\r") && !inQuotes) {
+          if (char === "\r" && next === "\n") i++;
+          row.push(cell.trim());
+          if (row.some((v) => v !== "")) rows.push(row);
+          row = [];
+          cell = "";
+        } else {
+          cell += char;
+        }
+      }
+
+      row.push(cell.trim());
+      if (row.some((v) => v !== "")) rows.push(row);
+      return rows;
+    }
+
+    function normalizeToken(token) {
+      return token.trim();
+    }
+
+    function rowToQuestion(row, rowIndex) {
+      const cleaned = row.map((v) => v.replace(/^\uFEFF/, "").trim());
+      const slashIndex = cleaned.findIndex((cell) => cell.includes("/"));
+      let english = "";
+      let japanese = "";
+
+      if (slashIndex >= 0) {
+        english = cleaned[slashIndex];
+        japanese = cleaned.find((cell, index) => index !== slashIndex && cell && !cell.includes("/")) || "";
+      } else if (cleaned.length >= 2) {
+        english = cleaned[0];
+        japanese = cleaned[1];
+      }
+
+      if (!english || !japanese) return null;
+
+      const lower = english.toLowerCase();
+      const headerLike =
+        rowIndex === 0 &&
+        (lower.includes("english") || english.includes("英文") || english.includes("英語") || japanese.includes("和訳") || japanese.includes("日本語"));
+
+      if (headerLike) return null;
+
+      const tokens = english
+        .split("/")
+        .map(normalizeToken)
+        .filter(Boolean);
+
+      if (tokens.length < 2) return null;
+
+      return {
+        id: `${Date.now()}-${rowIndex}-${Math.random().toString(36).slice(2, 7)}`,
+        japanese,
+        englishSlash: english,
+        tokens,
+        correct: tokens.join(" ")
+      };
+    }
+
+    function loadQuestionsFromStorage() {
+      state.questions = safeJSONParse(localStorage.getItem(STORAGE_KEYS.questions), []);
+      renderHome();
+    }
+
+    function renderHome() {
+      const wrongs = getWrongs();
+      loadedCountPill.textContent = `${state.questions.length}問`;
+      questionStatus.textContent = `読み込み済み：${state.questions.length}問`;
+      wrongStatus.textContent = `保存済みミス：${wrongs.length}件`;
+      startBtn.disabled = state.questions.length === 0;
+      renderWrongHistory();
+      renderLatestResult();
+    }
+
+    function renderLatestResult() {
+      const latest = safeJSONParse(localStorage.getItem(STORAGE_KEYS.latest), null);
+      if (!latest) {
+        latestResultArea.innerHTML = '<div class="empty">まだ結果はありません。</div>';
+        return;
+      }
+
+      latestResultArea.innerHTML = `
+        <div class="result-summary">
+          <div class="summary-tile"><strong>${latest.total}</strong><span>出題数</span></div>
+          <div class="summary-tile"><strong>${latest.score}</strong><span>正解</span></div>
+          <div class="summary-tile"><strong>${latest.wrong}</strong><span>間違い</span></div>
+        </div>
+        <p class="subtext">前回：${escapeHTML(latest.date)}</p>
+      `;
+    }
+
+    function renderWrongHistory() {
+      const wrongs = getWrongs().slice().reverse();
+      if (wrongs.length === 0) {
+        wrongHistory.innerHTML = '<div class="empty">間違えた問題はまだ保存されていません。</div>';
+        return;
+      }
+
+      wrongHistory.innerHTML = wrongs
+        .map((item) => `
+          <article class="wrong-card">
+            <p class="meta">${escapeHTML(item.date)}</p>
+            <p><b>和訳：</b>${escapeHTML(item.japanese)}</p>
+            <p><b>正解：</b>${escapeHTML(item.correct)}</p>
+            <p><b>あなたの回答：</b>${escapeHTML(item.answer || "未回答")}</p>
+          </article>
+        `)
+        .join("");
+    }
+
+    function escapeHTML(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function shuffleArray(array) {
+      const copied = [...array];
+      for (let i = copied.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copied[i], copied[j]] = [copied[j], copied[i]];
+      }
+      return copied;
+    }
+
+    function shuffledTokens(tokens) {
+      if (tokens.length <= 2) return shuffleArray(tokens);
+      let result = shuffleArray(tokens);
+      let attempts = 0;
+      while (result.every((token, index) => token === tokens[index]) && attempts < 12) {
+        result = shuffleArray(tokens);
+        attempts++;
+      }
+      return result;
+    }
+
+    function pickSession(count) {
+      const shuffled = shuffleArray(state.questions);
+      return shuffled.slice(0, count);
+    }
+
+    function openCountModal() {
+      if (state.questions.length === 0) {
+        alert("先にCSVファイルを読み込んでください。");
+        return;
+      }
+      modalHelp.textContent = `1〜${state.questions.length}問の範囲で指定してください。`;
+      questionCountInput.max = String(state.questions.length);
+      questionCountInput.value = String(Math.min(10, state.questions.length));
+      countModal.classList.add("active");
+      setTimeout(() => questionCountInput.focus(), 0);
+    }
+
+    function closeCountModal() {
+      countModal.classList.remove("active");
+    }
+
+    function startSession(count) {
+      state.session = pickSession(count);
+      state.currentIndex = 0;
+      state.completedCount = 0;
+      state.score = 0;
+      state.sessionWrongs = [];
+      state.sessionActive = true;
+      homeScreen.classList.remove("active");
+      questionScreen.classList.add("active");
+      renderQuestion();
+    }
+
+    function currentQuestion() {
+      return state.session[state.currentIndex];
+    }
+
+    function renderQuestion() {
+      const q = currentQuestion();
+      if (!q) {
+        finishSession();
+        return;
+      }
+
+      state.currentTokens = q.tokens;
+      state.currentShuffled = shuffledTokens(q.tokens).map((token, index) => ({
+        id: `${state.currentIndex}-${index}-${Math.random().toString(36).slice(2, 6)}`,
+        value: token,
+        placed: false
+      }));
+
+      progressText.textContent = `${state.currentIndex + 1} / ${state.session.length}`;
+      scoreText.textContent = `正解 ${state.score}`;
+      progressBar.style.width = `${(state.currentIndex / state.session.length) * 100}%`;
+      translationText.textContent = q.japanese;
+      judgeText.textContent = "";
+      judgeText.className = "judge";
+      checkBtn.disabled = false;
+
+      renderSlots();
+      renderWordBank();
+    }
+
+    function renderSlots() {
+      answerArea.innerHTML = "";
+      state.currentTokens.forEach((_, index) => {
+        const slot = document.createElement("div");
+        slot.className = "answer-slot empty";
+        slot.dataset.index = String(index);
+        slot.addEventListener("click", () => removeFromSlot(index));
+        slot.addEventListener("dragover", onDragOverSlot);
+        slot.addEventListener("dragleave", onDragLeaveSlot);
+        slot.addEventListener("drop", onDropSlot);
+        answerArea.appendChild(slot);
+      });
+    }
+
+    function renderWordBank() {
+      wordBank.innerHTML = "";
+      const remaining = state.currentShuffled.filter((item) => !item.placed);
+      remaining.forEach((item) => {
+        const chip = createChip(item);
+        wordBank.appendChild(chip);
+      });
+
+      if (remaining.length === 0) {
+        const note = document.createElement("div");
+        note.className = "empty";
+        note.textContent = "すべて配置済みです。";
+        wordBank.appendChild(note);
+      }
+    }
+
+    function createChip(item) {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.textContent = item.value;
+      chip.draggable = true;
+      chip.dataset.tokenId = item.id;
+      chip.addEventListener("click", () => placeTokenInFirstEmpty(item.id));
+      chip.addEventListener("dragstart", (event) => {
+        state.draggedTokenId = item.id;
+        chip.classList.add("dragging");
+        event.dataTransfer.setData("text/plain", item.id);
+        event.dataTransfer.effectAllowed = "move";
+      });
+      chip.addEventListener("dragend", () => {
+        state.draggedTokenId = null;
+        chip.classList.remove("dragging");
+        document.querySelectorAll(".answer-slot.drop-target").forEach((slot) => slot.classList.remove("drop-target"));
+      });
+      return chip;
+    }
+
+    function firstEmptySlot() {
+      return Array.from(answerArea.querySelectorAll(".answer-slot")).find((slot) => !slot.dataset.tokenId);
+    }
+
+    function placeTokenInFirstEmpty(tokenId) {
+      const slot = firstEmptySlot();
+      if (!slot) return;
+      placeTokenInSlot(tokenId, Number(slot.dataset.index));
+    }
+
+    function placeTokenInSlot(tokenId, slotIndex) {
+      const token = state.currentShuffled.find((item) => item.id === tokenId);
+      const slot = answerArea.querySelector(`.answer-slot[data-index="${slotIndex}"]`);
+      if (!token || !slot || token.placed) return;
+
+      if (slot.dataset.tokenId) {
+        removeFromSlot(slotIndex);
+      }
+
+      token.placed = true;
+      slot.dataset.tokenId = token.id;
+      slot.dataset.value = token.value;
+      slot.classList.remove("empty");
+      slot.classList.add("filled");
+      slot.innerHTML = "";
+
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "chip";
+      chip.textContent = token.value;
+      chip.addEventListener("click", (event) => {
+        event.stopPropagation();
+        removeFromSlot(slotIndex);
+      });
+      slot.appendChild(chip);
+      renderWordBank();
+    }
+
+    function removeFromSlot(slotIndex) {
+      const slot = answerArea.querySelector(`.answer-slot[data-index="${slotIndex}"]`);
+      if (!slot || !slot.dataset.tokenId) return;
+
+      const token = state.currentShuffled.find((item) => item.id === slot.dataset.tokenId);
+      if (token) token.placed = false;
+
+      delete slot.dataset.tokenId;
+      delete slot.dataset.value;
+      slot.className = "answer-slot empty";
+      slot.innerHTML = "";
+      renderWordBank();
+    }
+
+    function onDragOverSlot(event) {
+      event.preventDefault();
+      event.currentTarget.classList.add("drop-target");
+    }
+
+    function onDragLeaveSlot(event) {
+      event.currentTarget.classList.remove("drop-target");
+    }
+
+    function onDropSlot(event) {
+      event.preventDefault();
+      const slot = event.currentTarget;
+      slot.classList.remove("drop-target");
+      const tokenId = event.dataTransfer.getData("text/plain") || state.draggedTokenId;
+      if (!tokenId) return;
+      placeTokenInSlot(tokenId, Number(slot.dataset.index));
+    }
+
+    function getAnswerTokens() {
+      return Array.from(answerArea.querySelectorAll(".answer-slot")).map((slot) => slot.dataset.value || "");
+    }
+
+    function checkAnswer() {
+      const q = currentQuestion();
+      const answerTokens = getAnswerTokens();
+      const allFilled = answerTokens.every(Boolean);
+
+      if (!allFilled) {
+        judgeText.textContent = "まだ空欄があります。";
+        judgeText.className = "judge ng";
+        return;
+      }
+
+      const ok = answerTokens.every((token, index) => token === q.tokens[index]);
+      const userAnswer = answerTokens.join(" ");
+
+      checkBtn.disabled = true;
+
+      if (ok) {
+        state.score++;
+        judgeText.textContent = "正解！";
+        judgeText.className = "judge ok";
+      } else {
+        judgeText.textContent = `不正解。正解：${q.correct}`;
+        judgeText.className = "judge ng";
+        state.sessionWrongs.push({
+          japanese: q.japanese,
+          correct: q.correct,
+          answer: userAnswer,
+          date: formatDate(new Date())
+        });
+      }
+
+      // 答え合わせが完了したタイミングでのみ、リザルト用の出題数をカウントする。
+      state.completedCount++;
+      scoreText.textContent = `正解 ${state.score}`;
+      progressBar.style.width = `${(state.completedCount / state.session.length) * 100}%`;
+
+      setTimeout(() => {
+        if (!state.sessionActive) return;
+        state.currentIndex++;
+        if (state.currentIndex >= state.session.length) {
+          finishSession();
+        } else {
+          renderQuestion();
+        }
+      }, ok ? 650 : 1500);
+    }
+
+    function resetCurrent() {
+      state.currentShuffled.forEach((item) => (item.placed = false));
+      renderSlots();
+      renderWordBank();
+      judgeText.textContent = "";
+      judgeText.className = "judge";
+      checkBtn.disabled = false;
+    }
+
+    function undoLast() {
+      const slots = Array.from(answerArea.querySelectorAll(".answer-slot"));
+      const last = slots.reverse().find((slot) => slot.dataset.tokenId);
+      if (last) removeFromSlot(Number(last.dataset.index));
+    }
+
+    function finishSession() {
+      if (!state.sessionActive && !questionScreen.classList.contains("active")) return;
+      state.sessionActive = false;
+
+      const completedCount = Math.min(state.completedCount, state.session.length);
+      const storedWrongs = getWrongs();
+      const merged = [...storedWrongs, ...state.sessionWrongs].slice(-200);
+      saveWrongs(merged);
+
+      saveLatestResult({
+        total: completedCount,
+        plannedTotal: state.session.length,
+        score: state.score,
+        wrong: state.sessionWrongs.length,
+        date: formatDate(new Date())
+      });
+
+      questionScreen.classList.remove("active");
+      homeScreen.classList.add("active");
+      renderHome();
+
+      const message = `終了：${completedCount}問中 ${state.score}問正解
+間違い ${state.sessionWrongs.length}件をリザルトに保存しました。`;
+      alert(message);
+    }
+
+    function quitSession() {
+      if (confirm("現在の問題を中断してホームに戻りますか？\nここまでの間違いはリザルトに保存されます。")) {
+        finishSession();
+      }
+    }
+
+    function formatDate(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      const hh = String(date.getHours()).padStart(2, "0");
+      const mm = String(date.getMinutes()).padStart(2, "0");
+      return `${y}/${m}/${d} ${hh}:${mm}`;
+    }
+
+    csvInput.addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const rows = parseCSV(text);
+        const questions = rows.map(rowToQuestion).filter(Boolean);
+
+        if (questions.length === 0) {
+          alert("問題として読み取れる行がありませんでした。形式を確認してください。");
+          return;
+        }
+
+        state.questions = questions;
+        saveQuestions();
+        renderHome();
+        alert(`${questions.length}問を読み込みました。`);
+      } catch (error) {
+        console.error(error);
+        alert("CSVの読み込みに失敗しました。");
+      } finally {
+        csvInput.value = "";
+      }
+    });
+
+    startBtn.addEventListener("click", openCountModal);
+
+    clearQuestionsBtn.addEventListener("click", () => {
+      if (!confirm("読み込み済みの問題データを削除しますか？")) return;
+      state.questions = [];
+      localStorage.removeItem(STORAGE_KEYS.questions);
+      renderHome();
+    });
+
+    clearWrongsBtn.addEventListener("click", () => {
+      if (!confirm("保存された間違い履歴を削除しますか？")) return;
+      saveWrongs([]);
+      renderHome();
+    });
+
+    refreshResultBtn.addEventListener("click", renderHome);
+
+    cancelCountBtn.addEventListener("click", closeCountModal);
+
+    confirmCountBtn.addEventListener("click", () => {
+      const max = state.questions.length;
+      const count = Number(questionCountInput.value);
+      if (!Number.isInteger(count) || count < 1 || count > max) {
+        alert(`1〜${max}の範囲で入力してください。`);
+        return;
+      }
+      closeCountModal();
+      startSession(count);
+    });
+
+    countModal.addEventListener("click", (event) => {
+      if (event.target === countModal) closeCountModal();
+    });
+
+    questionCountInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") confirmCountBtn.click();
+    });
+
+    checkBtn.addEventListener("click", checkAnswer);
+    resetBtn.addEventListener("click", resetCurrent);
+    undoBtn.addEventListener("click", undoLast);
+    quitBtn.addEventListener("click", quitSession);
+
+    loadQuestionsFromStorage();
+  </script>
+</body>
+</html>
